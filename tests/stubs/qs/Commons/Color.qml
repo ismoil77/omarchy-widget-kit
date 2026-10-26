@@ -5,6 +5,7 @@ QtObject {
   property color accent: "#205ea6"
   property color urgent: "#af3029"
   property color foreground: "#100f0f"
+  property color background: "#fffcf0"
   readonly property QtObject popups: QtObject {
     property color background: "#fffcf0"
     property color text: "#100f0f"

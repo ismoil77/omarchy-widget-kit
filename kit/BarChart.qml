@@ -121,7 +121,8 @@ Item {
           width: parent.width
           height: modelData > 0 ? Math.max(Style.space(2), parent.height * modelData / chart.peak) : 0
           radius: Math.min(3, width / 2)
-          color: parent.lit ? chart.look.accentFill : Util.alpha(chart.look.accentFill, 0.55)
+          // Both stay 3:1 graphics on the popup; the picked one is the stronger.
+          color: parent.lit ? chart.look.accentText : chart.look.accentSoft
 
           Behavior on height { NumberAnimation { duration: chart.look.fade; easing.type: Easing.OutCubic } }
         }

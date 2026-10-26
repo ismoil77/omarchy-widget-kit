@@ -39,13 +39,16 @@ Item {
   readonly property int heroLarge: px(Style.font.displayLarge, 30)
   readonly property int bottomPad: Style.space(10)
 
-  readonly property string background: String(Color.popups.background)
+  // The popup's background as seen: a translucent one is judged over the theme's own background.
+  readonly property string background: Contrast.flatten(String(Color.popups.background), String(Color.background))
   readonly property color ink: Qt.color(Contrast.ensure(String(Color.popups.text), background, 7))
   readonly property color dim: Qt.color(Contrast.ensure(Contrast.mix(String(Color.popups.text), background, 0.22), background, 4.5))
   readonly property color line: Qt.color(Contrast.mix(String(Color.popups.text), background, 0.45))
   readonly property color track: Util.alpha(ink, 0.10)
   readonly property color accentText: onPopup(accent, 4.5)
   readonly property color accentFill: onPopup(accent, 3)
+  // A quieter shade of the accent that is still a 3:1 graphic: what is not selected.
+  readonly property color accentSoft: onPopup(Contrast.mix(String(accent), background, 0.45), 3)
   readonly property color urgentText: onPopup(urgent, 4.5)
 
   // `color` adjusted to read on the popup: 4.5 for text, 3 for graphics.

@@ -74,3 +74,21 @@ test("ensure terminates and stays valid for any background", () => {
       assert.ok(C.ratio(c, bg) >= 4.5, `${fg} on ${bg}`)
     }
 })
+
+test("flatten: opaque colours pass through, translucent ones are judged over what is behind", () => {
+  assert.equal(C.flatten("#336699", "#ffffff"), "#336699")
+  assert.equal(C.flatten("#ff336699", "#ffffff"), "#336699")
+  assert.equal(C.flatten("#80000000", "#ffffff"), "#7f7f7f")
+  assert.equal(C.flatten("#00ff0000", "#102030"), "#102030")
+})
+
+test("every installed theme: the selected and the quiet chart shades are graphics, and tell apart", () => {
+  for (const [name, p] of Object.entries(palettes)) {
+    for (const level of ["red", "yellow", "green"]) {
+      const lit = C.ensure(p[level], p.background, 4.5)
+      const soft = C.ensure(C.mix(p[level], p.background, 0.45), p.background, 3)
+      assert.ok(C.ratio(soft, p.background) >= 3, `${name} ${level} quiet shade`)
+      assert.ok(C.ratio(lit, p.background) > C.ratio(soft, p.background), `${name} ${level} lit is stronger`)
+    }
+  }
+})
