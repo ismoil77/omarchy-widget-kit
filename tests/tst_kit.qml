@@ -138,6 +138,34 @@ Item {
       compare(chart.columnAt(chart.columnWidth * 1.5 + chart.gap), 1)
     }
 
+    function bars(item, found) {
+      for (var i = 0; i < item.children.length; i++) {
+        var c = item.children[i]
+        if (c.objectName === "bar") found.push(c)
+        bars(c, found)
+      }
+      return found
+    }
+
+    function test_chart_bars_grow_from_nothing_and_never_pass_the_plot() {
+      var chart = createTemporaryObject(chartComponent, scene)
+      compare(bars(chart, []).length, 4)
+      // Another period brings bigger numbers: no column may be taller than the plot, at any moment.
+      chart.values = [900, 1000, 40, 7, 500, 3, 1]
+      chart.ticks = ["", "", "", "", "", "", ""]
+      var now = bars(chart, [])
+      compare(now.length, 7)
+      for (var i = 0; i < now.length; i++) verify(now[i].height <= chart.plotHeight)
+      tryVerify(function() { return bars(chart, [])[1].height === chart.plotHeight })
+      var settled = bars(chart, [])
+      for (var j = 0; j < settled.length; j++) verify(settled[j].height <= chart.plotHeight && settled[j].height > 0)
+    }
+
+    function test_chart_without_columns_has_no_column_under_the_pointer() {
+      var chart = createTemporaryObject(chartComponent, scene, { values: [], ticks: [] })
+      compare(chart.columnAt(10), -1)
+    }
+
     function test_chart_signals() {
       var chart = createTemporaryObject(chartComponent, scene)
       var seen = []
@@ -153,6 +181,13 @@ Item {
       verify(chart.implicitHeight > oneLine)
       chart.detailSample = ""
       compare(chart.implicitHeight, oneLine)
+    }
+
+    function test_chart_layout_does_not_follow_the_title_under_the_pointer() {
+      var chart = createTemporaryObject(chartComponent, scene, { title: "x", detail: "figures", detailSample: "figures", titleSample: "a title as wide as any of them" })
+      var height = chart.implicitHeight
+      chart.title = "a much longer title that is on show while the pointer is over another column of this chart"
+      compare(chart.implicitHeight, height)
     }
 
     function test_chart_with_no_data_does_not_divide_by_zero() {

@@ -32,20 +32,22 @@ Do **not** call the `Look` instance `look`: inside a component that has a `look`
 
 | File | What it is |
 |---|---|
-| `Look.qml` | The popup's look: `ink` / `dim` / `line` / `track` colours, `accentText` / `accentFill` / `urgentText`, all held to WCAG contrast on the popup background; `small` … `heroLarge` type scale (13 px floor, scaled by `textSize`); `fade` (0 when animations are off); `onPopup(color, min)`. |
+| `Look.qml` | The popup's look: `ink` / `dim` / `line` / `track` colours, `accentText` / `accentFill` / `accentSoft` / `urgentText`, all held to WCAG contrast on the popup background; `small` … `heroLarge` type scale (13 px floor, scaled by `textSize`); `fade` (0 when animations are off); `onPopup(color, min)`. |
 | `StatRow.qml` | A ranked-list line: a name, right-aligned `cells` in columns given by `cellWidths`, the row's `share` painted behind it, optional click. |
 | `BarChart.qml` | Columns from `values` with `ticks`, a readout (`title`, `detail`) that wraps instead of being cut off, hover → `columnHovered(i)`. |
 | `Meter.qml` | A thin meter, `fraction` 0..1, from the left or the right. |
 | `InfoPair.qml` | A label on the left, a value on the right; the label gives way when tight. |
 | `MoreButton.qml` | "3 more" / "Collapse" under a cut list; hidden while its text is empty. |
 | `Contrast.js` | `ratio`, `mix`, `over`, `ensure(fg, bg, min)` — nudges a colour until it reaches a contrast ratio, keeping its hue. |
-| `I18n.js` | `resolve(setting, locale, langs)`, `t(tables, lang, key, params)`, `plural` (en, ru), `count`, `num` (decimal comma). The widget owns its tables. |
+| `I18n.js` | `resolve(setting, locale, langs, names)`, `t(tables, lang, key, params)`, `plural` (en, ru), `count`, `num` (decimal comma). The widget owns its tables. |
 
 ## Tests
 
 ```bash
 tests/run.sh   # Node: Contrast + I18n (every theme's palette for contrast); Qt: the components, against a stub of the shell's Style/Color/Util
 ```
+
+The Qt part needs `qmltestrunner` (Qt 6); without it `run.sh` skips that part and says so, and the CI workflow runs the Node part only.
 
 ## License
 
