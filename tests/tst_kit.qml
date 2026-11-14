@@ -272,5 +272,54 @@ Item {
       row.a.visible = false
       tryCompare(row.b, "width", 400)
     }
+
+    function test_header_shows_name_value_and_chip() {
+      var h = createTemporaryObject(Qt.createComponent("../kit/Header.qml"), scene, { look: skin, width: 380, glyph: "x", name: "memory", value: "73%", say: "calm", chip: "ok" })
+      verify(h.implicitHeight > 0)
+      h.chip = ""
+      verify(h.implicitHeight > 0)
+    }
+
+    Component {
+      id: sectionComponent
+      Kit.Section {
+        width: 300
+        look: skin
+        caption: "Apps"
+        trailing: [Kit.ActionButton { look: skin; text: "5"; compact: true }]
+        Text { text: "row" }
+      }
+    }
+
+    function test_section_takes_trailing_controls_and_content() {
+      var s = createTemporaryObject(sectionComponent, scene)
+      tryVerify(function() { return s.implicitHeight > 30 })
+    }
+
+    Component {
+      id: actionRowComponent
+      Kit.ActionRow {
+        width: 300
+        property alias first: one
+        Kit.ActionButton { id: one; look: skin; text: "Send"; primary: true }
+        Kit.ActionButton { look: skin; text: "Apply changes now" }
+        Kit.ActionButton { look: skin; text: "x"; visible: false }
+      }
+    }
+
+    function test_action_row_shares_width_and_buttons_click() {
+      var r = createTemporaryObject(actionRowComponent, scene)
+      tryCompare(r.first, "width", (300 - r.spacing) / 2)
+      var clicks = 0
+      r.first.clicked.connect(function() { clicks++ })
+      mouseClick(r.first)
+      compare(clicks, 1)
+      compare(String(r.first.labelColor), "#ffffff")
+    }
+
+    function test_signature_reads_like_the_family() {
+      var sig = createTemporaryObject(Qt.createComponent("../kit/Signature.qml"), scene, { look: skin, width: 300, widget: "Memory", version: "2.0.0" })
+      verify(sig.implicitHeight > 0)
+    }
   }
 }
