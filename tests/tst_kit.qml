@@ -337,5 +337,16 @@ Item {
       var r = createTemporaryObject(repeatedRowComponent, scene)
       tryCompare(r, "cell", (300 - r.spacing * 2) / 3)
     }
+
+    function test_glyph_centres_its_ink() {
+      var g = createTemporaryObject(Qt.createComponent("../kit/Glyph.qml"), scene, { width: 40, height: 40, text: "W", pixelSize: 20 })
+      tryVerify(function() { return g.ink.width > 0 })
+      // The ink's centre lands within a pixel of the item's centre.
+      var lbl = g.drawn
+      var cx = lbl.x + g.ink.x + g.ink.width / 2
+      var cy = lbl.y + lbl.baselineOffset + g.ink.y + g.ink.height / 2
+      verify(Math.abs(cx - 20) <= 0.5, "x " + cx)
+      verify(Math.abs(cy - 20) <= 0.5, "y " + cy)
+    }
   }
 }
