@@ -69,3 +69,14 @@ test("num: decimal comma in Russian only", () => {
   assert.equal(I.num("en", 1234.5, 2), "1234.50")
   assert.equal(I.num("de", 1.5, 1), "1,5")
 })
+
+test("latinKey: a Russian-layout key is the Latin letter on the same key", () => {
+  const I = I18n()
+  assert.equal(I.latinKey("ы"), "s")
+  assert.equal(I.latinKey("К"), "r")
+  assert.equal(I.latinKey("в"), "d")
+  assert.equal(I.latinKey("r"), "r")
+  assert.equal(I.latinKey("1"), "1")
+  assert.equal(I.latinKey("+"), "+")
+  assert.equal(I.latinKey(""), "")
+})
