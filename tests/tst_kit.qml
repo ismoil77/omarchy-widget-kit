@@ -252,5 +252,25 @@ Item {
       compare(icon.implicitWidth, 24)
       verify(icon.tint.a > 0)
     }
+
+    Component {
+      id: tileRowComponent
+      Kit.TileRow {
+        width: 400
+        property alias a: tileA
+        property alias b: tileB
+        Kit.Tile { id: tileA; look: skin; caption: "short"; value: "1" }
+        Kit.Tile { id: tileB; look: skin; caption: "tall"; value: "2"; detail: "one\ntwo\nthree"; fraction: 0.5 }
+      }
+    }
+
+    function test_tile_row_lines_tiles_up_and_shares_room() {
+      var row = createTemporaryObject(tileRowComponent, scene)
+      tryVerify(function() { return row.a.height > 0 && row.a.height === row.b.height })
+      verify(row.b.implicitHeight > row.a.implicitHeight)
+      compare(row.a.width, row.b.width)
+      row.a.visible = false
+      tryCompare(row.b, "width", 400)
+    }
   }
 }
