@@ -324,5 +324,18 @@ Item {
       var sig = createTemporaryObject(Qt.createComponent("../kit/Signature.qml"), scene, { look: skin, width: 300, widget: "Memory", version: "2.0.0" })
       verify(sig.implicitHeight > 0)
     }
+
+    Component {
+      id: repeatedRowComponent
+      Kit.ActionRow {
+        width: 300
+        Repeater { model: 3; delegate: Kit.ActionButton { look: skin; text: "x" } }
+      }
+    }
+
+    function test_action_row_shares_width_among_repeated_buttons() {
+      var r = createTemporaryObject(repeatedRowComponent, scene)
+      tryCompare(r, "cell", (300 - r.spacing * 2) / 3)
+    }
   }
 }
