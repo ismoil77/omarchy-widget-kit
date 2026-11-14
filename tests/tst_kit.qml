@@ -1,6 +1,7 @@
 import QtQuick
 import QtTest
 import "../kit" as Kit
+import "../kit/Contrast.js" as Contrast
 
 // The kit's components, built in Qt's own engine against a stub of the shell's
 // Style/Color/Util. Catches binding errors and layout regressions that Node can't see.
@@ -206,8 +207,12 @@ Item {
       var plain = skin
       var themed = themedLook
       verify(String(themed.good) !== String(plain.good), "green from the palette")
-      // Contrast against the popup is not checked here: under qmltestrunner Qt's
-      // own `Color` type hides the stub's, so the popup background is unknown.
+      // The stub's popup is cream: text colours must be dark enough on it.
+      compare(String(themed.background), "#fffcf0")
+      verify(Contrast.ratio(String(themed.badText), "#fffcf0") >= 4.5)
+      verify(Contrast.ratio(String(themed.warnText), "#fffcf0") >= 4.5)
+      verify(Contrast.ratio(String(themed.good), "#fffcf0") >= 3)
+      verify(String(themed.surface) !== String(themed.background))
       compare(String(themed.levelFill("bad")), String(themed.bad))
       compare(String(themed.levelText("warn")), String(themed.warnText))
       compare(String(themed.levelFill("anything")), String(themed.good))
@@ -248,12 +253,23 @@ Item {
       verify(chart.implicitHeight >= chart.chartHeight)
       chart.series = []
       wait(20)
+      // A colour given by name paints too, and a chart that is not live is left alone.
+      chart.live = false
+      chart.series = [{ values: [0.2, 0.4], color: "red", fill: true }]
+      wait(20)
+      chart.live = true
+      wait(20)
     }
 
     function test_app_icon_falls_back_to_a_letter() {
       var icon = createTemporaryObject(Qt.createComponent("../kit/AppIcon.qml"), scene, { look: skin, name: "chromium", size: 24 })
       compare(icon.implicitWidth, 24)
       verify(icon.tint.a > 0)
+      compare(icon.initial, "C")
+      icon.name = "  «Ёлка»"; compare(icon.initial, "Ё")
+      icon.name = "微信"; compare(icon.initial, "微")
+      icon.name = "7zip"; compare(icon.initial, "7")
+      icon.name = "…"; compare(icon.initial, "")
     }
 
     Component {
@@ -336,6 +352,7 @@ Item {
     function test_action_row_shares_width_among_repeated_buttons() {
       var r = createTemporaryObject(repeatedRowComponent, scene)
       tryCompare(r, "cell", (300 - r.spacing * 2) / 3)
+      tryCompare(r.children[0], "width", r.cell)
     }
 
     function test_glyph_centres_its_ink() {

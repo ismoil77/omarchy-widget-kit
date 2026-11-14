@@ -32,14 +32,26 @@ Do **not** call the `Look` instance `look`: inside a component that has a `look`
 
 | File | What it is |
 |---|---|
-| `Look.qml` | The popup's look: `ink` / `dim` / `line` / `track` colours, `accentText` / `accentFill` / `accentSoft` / `urgentText`, all held to WCAG contrast on the popup background; `small` … `heroLarge` type scale (13 px floor, scaled by `textSize`); `fade` (0 when animations are off); `onPopup(color, min)`. |
-| `StatRow.qml` | A ranked-list line: a name, right-aligned `cells` in columns given by `cellWidths`, the row's `share` painted behind it, optional click. |
-| `BarChart.qml` | Columns from `values` with `ticks`, a readout (`title`, `detail`) that wraps instead of being cut off, hover → `columnHovered(i)`. |
-| `Meter.qml` | A thin meter, `fraction` 0..1, from the left or the right. |
-| `InfoPair.qml` | A label on the left, a value on the right; the label gives way when tight. |
-| `MoreButton.qml` | "3 more" / "Collapse" under a cut list; hidden while its text is empty. |
-| `Contrast.js` | `ratio`, `mix`, `over`, `ensure(fg, bg, min)` — nudges a colour until it reaches a contrast ratio, keeping its hue. |
-| `I18n.js` | `resolve(setting, locale, langs, names)`, `t(tables, lang, key, params)`, `plural` (en, ru), `count`, `num` (decimal comma). The widget owns its tables. |
+| `Look.qml` | The popup's look: `ink` / `dim` / `track` / `surface`, accent and level colours (`good` / `warn` / `bad`, as graphics and as text) held to WCAG contrast on the popup background; the type scale (13 px floor, scaled by `textSize`); `fade`; `themed(name)`, `hue(name)`, `onPopup(color, min)`. |
+| `ThemePalette.qml`, `Theme.js` | The current theme's named colours, followed live; a stable colour per name. |
+| `Header.qml` | The top of a popup: a glyph in a square tinted with the state, NAME, one big figure, a sentence, a status chip. |
+| `Section.qml`, `Card.qml` | A raised card with a caption and a hint or controls on the right; `Card` is one without a caption. |
+| `Tile.qml`, `TileRow.qml` | A card with a caption, a big value, a meter with a limit mark, a detail; tiles in a row share one size. |
+| `ActionButton.qml`, `ActionRow.qml` | The family's button (`primary`, `selected`, `danger`, `compact`); buttons in a row share the width. The row sets its children's size: do not bind it. |
+| `Signature.qml` | The last line: `ismoil · name`, version on the right. |
+| `Glyph.qml` | An icon glyph centred on its ink, not on its character cell. |
+| `Chip.qml` | A status pill: a dot and a word. |
+| `AppIcon.qml` | An app's icon, or its first letter (any script) on a theme-coloured tile. |
+| `AreaChart.qml` | Recent history as lines; paints only while `live`. |
+| `SegmentBar.qml` | What a whole is made of: one split bar and a legend. |
+| `BarChart.qml` | Columns with ticks and a readout that wraps; hover → `columnHovered(i)`. |
+| `StatRow.qml` | A ranked-list line: a name, right-aligned cells in columns, the row's share behind it. |
+| `Meter.qml`, `InfoPair.qml`, `MoreButton.qml` | A thin meter; a label with a value; "3 more" / "Collapse". |
+| `Contrast.js` | `ratio`, `mix`, `over`, `flatten`, `ensure(fg, bg, min)`. |
+| `I18n.js` | `resolve`, `t`, `plural` (en, ru), `count`, `num`. The widget owns its tables. |
+
+A layout must never read a size it sets: an `ActionButton` sized from its own laid-out label once put
+the whole shell into a polish loop. Measure with `TextMetrics`; the tests fail on any polish warning.
 
 ## Tests
 
