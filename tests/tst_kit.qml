@@ -18,6 +18,9 @@ Item {
     name: "Kit"
     when: windowShown
 
+    // A layout that feeds its own size froze the shell once: any polish loop fails the run.
+    function init() { failOnWarning(/polish/) }
+
     function test_look_type_scale_has_a_floor_and_scales() {
       verify(skin.small >= 13)
       compare(skin.textScale, 1)
