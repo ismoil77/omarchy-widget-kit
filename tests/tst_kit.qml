@@ -12,6 +12,7 @@ Item {
   Kit.Look { id: skin }
   Kit.Look { id: big; textSize: "Extra large"; animations: false }
   Kit.Look { id: large; textSize: "LARGE" }
+  Kit.Look { id: themedLook; themeColors: ({ green: "#879a39", red: "#d14d41", yellow: "#d0a215" }) }
 
   TestCase {
     name: "Kit"
@@ -196,6 +197,60 @@ Item {
       compare(chart.peak, 0)
       compare(chart.columnWidth, 0)
       compare(chart.shown, -1)
+    }
+
+    function test_look_levels_follow_the_palette_and_read_on_the_popup() {
+      var plain = skin
+      var themed = themedLook
+      verify(String(themed.good) !== String(plain.good), "green from the palette")
+      // Contrast against the popup is not checked here: under qmltestrunner Qt's
+      // own `Color` type hides the stub's, so the popup background is unknown.
+      compare(String(themed.levelFill("bad")), String(themed.bad))
+      compare(String(themed.levelText("warn")), String(themed.warnText))
+      compare(String(themed.levelFill("anything")), String(themed.good))
+    }
+
+    function test_card_and_tile_grow_with_content() {
+      var tile = createTemporaryObject(Qt.createComponent("../kit/Tile.qml"), scene, { look: skin, width: 180, caption: "Swap", value: "41%" })
+      var bare = tile.implicitHeight
+      tile.fraction = 0.4
+      tile.mark = 0.9
+      tile.detail = "limit 90%"
+      tryVerify(function() { return tile.implicitHeight > bare })
+      var clicks = 0
+      tile.action = "Free up"
+      tile.activated.connect(function() { clicks++ })
+      tile.activated()
+      compare(clicks, 1)
+    }
+
+    function test_chip_hides_without_text() {
+      var chip = createTemporaryObject(Qt.createComponent("../kit/Chip.qml"), scene, { look: skin, text: "" })
+      verify(!chip.visible)
+      chip.text = "calm"
+      verify(chip.visible)
+      verify(chip.implicitWidth > 20)
+    }
+
+    function test_segment_bar_sums_and_ignores_bad_values() {
+      var bar = createTemporaryObject(Qt.createComponent("../kit/SegmentBar.qml"), scene, { look: skin, width: 300,
+        segments: [{ value: 3, color: "red", label: "a" }, { value: -5, color: "blue", label: "b" }, { value: "x", color: "green", label: "c" }, { value: 1, color: "gray", label: "d" }] })
+      compare(bar.total, 4)
+      verify(bar.implicitHeight > 12)
+    }
+
+    function test_area_chart_paints_short_and_empty_series() {
+      var chart = createTemporaryObject(Qt.createComponent("../kit/AreaChart.qml"), scene, { look: skin, width: 300, capacity: 10,
+        series: [{ values: [0.1, 0.5, 2, -1], color: skin.accentFill, fill: true, label: "mem" }, { values: [], color: skin.bad, dashed: true }] })
+      verify(chart.implicitHeight >= chart.chartHeight)
+      chart.series = []
+      wait(20)
+    }
+
+    function test_app_icon_falls_back_to_a_letter() {
+      var icon = createTemporaryObject(Qt.createComponent("../kit/AppIcon.qml"), scene, { look: skin, name: "chromium", size: 24 })
+      compare(icon.implicitWidth, 24)
+      verify(icon.tint.a > 0)
     }
   }
 }
