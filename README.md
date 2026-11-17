@@ -48,6 +48,7 @@ Do **not** call the `Look` instance `look`: inside a component that has a `look`
 | `StatRow.qml` | A ranked-list line: a name, right-aligned cells in columns, the row's share behind it. |
 | `Meter.qml`, `InfoPair.qml`, `MoreButton.qml` | A thin meter; a label with a value; "3 more" / "Collapse". |
 | `Contrast.js` | `ratio`, `mix`, `over`, `flatten`, `ensure(fg, bg, min)`. |
+| `Bar.js` | `compact(setting, Screen.width)`: whether the bar is narrow (under 1700 px) and a widget should show less. |
 | `I18n.js` | `resolve`, `t`, `plural` (en, ru), `count`, `num`. The widget owns its tables. |
 
 A layout must never read a size it sets: an `ActionButton` sized from its own laid-out label once put

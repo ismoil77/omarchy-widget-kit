@@ -23,3 +23,4 @@ export function load(file) {
 export const Contrast = () => load("Contrast.js")
 export const I18n = () => load("I18n.js")
 export const Theme = () => load("Theme.js")
+export const Bar = () => load("Bar.js")
