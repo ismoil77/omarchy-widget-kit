@@ -1,10 +1,5 @@
 # Changelog
 
-## 2.2.0
-
-- `Bar.js`: `compact(setting, screenWidth)` — on a narrow screen widgets show less, so the bar's
-  sections do not overlap. 2.1.1: `I18n.latinKey`, shortcuts on a Russian layout.
-
 ## 2.1.0 — audit
 
 - Rows: `ActionRow` no longer forces its height (a closed popup measured 0 and resized on every open),
